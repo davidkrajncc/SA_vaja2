@@ -29,11 +29,11 @@ def filtriraj_z_gaussovim_jedrom(slika,sigma):
     '''Filtrira sliko z Gaussovim jedrom..'''
     velikost_jedra = int(2 * sigma * 2 + 1)
     jedro = np.zeros((velikost_jedra, velikost_jedra), dtype=np.float32)
-    sredina = velikost_jedra // 2
+    k = (velikost_jedra / 2) - (1 / 2)
     
     for i in range(velikost_jedra):
         for j in range(velikost_jedra):
-            jedro[i, j] = 1 / (2 * math.pi * sigma ** 2) * math.exp(-((i - sredina -1) ** 2 + (j - sredina - 1) ** 2) / (2 * sigma ** 2))
+            jedro[i, j] = 1 / (2 * math.pi * sigma ** 2) * math.exp(-((i - k -1) ** 2 + (j - k - 1) ** 2) / (2 * sigma ** 2))
             
     jedro /= np.sum(jedro)
     
@@ -44,6 +44,16 @@ def filtriraj_z_gaussovim_jedrom(slika,sigma):
 def filtriraj_sobel_smer(slika):
     '''Filtrira sliko z Sobelovim jedrom in označi gradiente v orignalni sliki glede na ustrezen pogoj.'''
     pass
+
+def filtriranje_sobel_vertikalno(slika):
+    sobel_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+    gradient_y = konvolucija(slika.astype(np.float32), sobel_y)
+    return gradient_y
+
+def filtriranje_sobel_horizontalno(slika):
+    sobel_x = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    gradient_x = konvolucija(slika.astype(np.float32), sobel_x)
+    return gradient_x
 
 def zmanjsaj_sliko(slika, sirina, visina):
     return cv.resize(slika, (sirina, visina))
@@ -74,5 +84,32 @@ if __name__ == '__main__':
             fps = fps_counter / (time.time() - start_time)
             cv.putText(filtrirana_slika ,str(int(fps)), (25, 25), cv.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0))
             cv.imshow('Filtrirana slika z Gaussovim jedrom', filtrirana_slika)
+
+        cv.destroyAllWindows()
+
+        start_time = time.time()
+        fps_counter = 0
+        while True:
+            # Preberemo sliko iz kamere
+            ret, slika = kamera.read()
+            slika = cv.flip(slika, 1)
+            slika = zmanjsaj_sliko(slika, 220, 340)
+            key = cv.waitKey(1) & 0xFF
+            # Če pritisnemo tipko 'q', zapremo okno
+            if key == ord('q'):
+                break
+
+            slika = cv.cvtColor(slika, cv.COLOR_BGR2RGB)
+            horizontalno = filtriranje_sobel_horizontalno(slika)
+            vertikalno = filtriranje_sobel_vertikalno(slika)
+
+            fps_counter += 1
+            fps = fps_counter / (time.time() - start_time)
+
+            cv.putText(horizontalno ,str(int(fps)), (25, 25), cv.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255))
+            cv.putText(vertikalno ,str(int(fps)), (25, 25), cv.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255))
+
+            cv.imshow('horizontalno', horizontalno)
+            cv.imshow('vertikalno', vertikalno)
 
         cv.destroyAllWindows()
