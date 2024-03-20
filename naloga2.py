@@ -5,7 +5,7 @@ import time
 import numba
 from numba import jit
 
-@jit(nopython=True)
+@jit(nopython=True, parallel=True)
 def konvolucija(slika, jedro):
     '''Izvede konvolucijo nad sliko. Brez uporabe funkcije cv.filter2D, ali katerekoli druge funkcije, ki izvaja konvolucijo.
     Funkcijo implementirajte sami z uporabo zank oz. vektorskega računanja.'''
@@ -18,21 +18,22 @@ def konvolucija(slika, jedro):
     slika_pad = np.zeros((visina + 2 * padding, sirina + 2 * padding, barvni_kanali), dtype=slika.dtype)
     slika_pad[padding:visina + padding, padding:sirina + padding, :] = slika
     
-    for c in range(barvni_kanali):
-        for y in range(visina):
-            for x in range(sirina):
+    for c in numba.prange(barvni_kanali):
+        for y in numba.prange(visina):
+            for x in numba.prange(sirina):
                 rezultat[y, x, c] = np.sum(slika_pad[y:y+j_h, x:x+j_w, c] * jedro)
             
     return rezultat
 
+@jit(nopython=True, parallel=True)
 def filtriraj_z_gaussovim_jedrom(slika,sigma):
     '''Filtrira sliko z Gaussovim jedrom..'''
     velikost_jedra = int(2 * sigma * 2 + 1)
     jedro = np.zeros((velikost_jedra, velikost_jedra), dtype=np.float32)
     k = (velikost_jedra / 2) - (1 / 2)
     
-    for i in range(velikost_jedra):
-        for j in range(velikost_jedra):
+    for i in numba.prange(velikost_jedra):
+        for j in numba.prange(velikost_jedra):
             jedro[i, j] = 1 / (2 * math.pi * sigma ** 2) * math.exp(-((i - k -1) ** 2 + (j - k - 1) ** 2) / (2 * sigma ** 2))
             
     jedro /= np.sum(jedro)
