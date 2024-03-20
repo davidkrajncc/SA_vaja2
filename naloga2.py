@@ -41,9 +41,18 @@ def filtriraj_z_gaussovim_jedrom(slika,sigma):
     
     return rezultat.astype(np.uint8)
 
-def filtriraj_sobel_smer(slika):
+def filtriraj_sobel_smer(slika, horizontalno, vertikalno):
     '''Filtrira sliko z Sobelovim jedrom in označi gradiente v orignalni sliki glede na ustrezen pogoj.'''
-    pass
+    # Izračunamo absolutni gradient
+    gradient_abs = np.sqrt(horizontalno ** 2 + vertikalno ** 2)
+    
+    slika = slika.copy()
+    blue_color = np.array([255, 0, 0])
+    indices = np.where(gradient_abs > 120)
+    for c in range(3):
+        slika[indices[0], indices[1], c] = blue_color[c]
+    
+    return slika
 
 def filtriranje_sobel_vertikalno(slika):
     sobel_y = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
@@ -102,13 +111,15 @@ if __name__ == '__main__':
             slika = cv.cvtColor(slika, cv.COLOR_BGR2RGB)
             horizontalno = filtriranje_sobel_horizontalno(slika)
             vertikalno = filtriranje_sobel_vertikalno(slika)
+            obe = filtriraj_sobel_smer(slika, horizontalno, vertikalno)
 
             fps_counter += 1
             fps = fps_counter / (time.time() - start_time)
-
+            cv.putText(obe ,str(int(fps)), (25, 25), cv.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255))
             cv.putText(horizontalno ,str(int(fps)), (25, 25), cv.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255))
             cv.putText(vertikalno ,str(int(fps)), (25, 25), cv.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255))
 
+            cv.imshow('obe', obe)
             cv.imshow('horizontalno', horizontalno)
             cv.imshow('vertikalno', vertikalno)
 
