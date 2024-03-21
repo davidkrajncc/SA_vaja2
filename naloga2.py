@@ -109,7 +109,6 @@ if __name__ == '__main__':
             if key == ord('q'):
                 break
 
-            slika = cv.cvtColor(slika, cv.COLOR_BGR2RGB)
             horizontalno = filtriranje_sobel_horizontalno(slika)
             vertikalno = filtriranje_sobel_vertikalno(slika)
             obe = filtriraj_sobel_smer(slika, horizontalno, vertikalno)
