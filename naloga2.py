@@ -75,7 +75,7 @@ if __name__ == '__main__':
     if not kamera.isOpened():
         print('Kamera ni bila odprta.')
     else:
-        start_time = time.time()
+        '''start_time = time.time()
         fps_counter = 0
         while True:
             # Preberemo sliko iz kamere
@@ -95,7 +95,7 @@ if __name__ == '__main__':
             cv.putText(filtrirana_slika ,str(int(fps)), (25, 25), cv.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0))
             cv.imshow('Filtrirana slika z Gaussovim jedrom', filtrirana_slika)
 
-        cv.destroyAllWindows()
+        cv.destroyAllWindows()'''
 
         start_time = time.time()
         fps_counter = 0
@@ -108,6 +108,8 @@ if __name__ == '__main__':
             # Če pritisnemo tipko 'q', zapremo okno
             if key == ord('q'):
                 break
+
+            slika = filtriraj_z_gaussovim_jedrom(slika, 0.9)
 
             horizontalno = filtriranje_sobel_horizontalno(slika)
             vertikalno = filtriranje_sobel_vertikalno(slika)
