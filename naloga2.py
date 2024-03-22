@@ -13,15 +13,15 @@ def konvolucija(slika, jedro):
     j_h, j_w = jedro.shape
     padding = j_w // 2
     
-    rezultat = np.zeros_like(slika)
+    rezultat = np.zeros_like(slika) #prazna slika, ko je enake velikosti ko vhodna slika
     
-    slika_pad = np.zeros((visina + 2 * padding, sirina + 2 * padding, barvni_kanali), dtype=slika.dtype)
-    slika_pad[padding:visina + padding, padding:sirina + padding, :] = slika
+    slika_pad = np.zeros((visina + 2 * padding, sirina + 2 * padding, barvni_kanali), dtype=slika.dtype) #prazna slika z dodanim padiingo
+    slika_pad[padding:visina + padding, padding:sirina + padding, :] = slika #orginal slika dodana v prazno sliko z dodanim padiingo
     
     for c in numba.prange(barvni_kanali):
         for y in numba.prange(visina):
             for x in numba.prange(sirina):
-                rezultat[y, x, c] = np.sum(slika_pad[y:y+j_h, x:x+j_w, c] * jedro)
+                rezultat[y, x, c] = np.sum(slika_pad[y:y+j_h, x:x+j_w, c] * jedro) #se izračuna konvolucija slike, množi se ustrezni dev slike z ustreznim delom jedra nakonco pa še sešteje vse elemente.
             
     return rezultat
 
@@ -30,13 +30,13 @@ def filtriraj_z_gaussovim_jedrom(slika,sigma):
     '''Filtrira sliko z Gaussovim jedrom..'''
     velikost_jedra = int(2 * sigma * 2 + 1)
     jedro = np.zeros((velikost_jedra, velikost_jedra), dtype=np.float32)
-    k = (velikost_jedra / 2) - (1 / 2)
+    k = (velikost_jedra / 2) - (1 / 2) #sredina jedra
     
     for i in numba.prange(velikost_jedra):
         for j in numba.prange(velikost_jedra):
             jedro[i, j] = 1 / (2 * math.pi * sigma ** 2) * math.exp(-((i - k -1) ** 2 + (j - k - 1) ** 2) / (2 * sigma ** 2))
-            
-    jedro /= np.sum(jedro)
+
+    jedro /= np.sum(jedro) #vsota vrednost / skupno vsota = 1
     
     rezultat = konvolucija(slika.astype(np.float32), jedro)
     
