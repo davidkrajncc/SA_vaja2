@@ -1,1 +1,13 @@
+name: Dostava kode na DockerHub
 
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repozitorija
+        uses: actions/checkout@v2
