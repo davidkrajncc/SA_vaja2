@@ -12,12 +12,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
+        
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
+        run: docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}--password-stdin
+        
       - name: Build Docker image
         run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/sa_vaja3in4_docker:${{ github.run_id }}
-
-      - name: Push to Docker Hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/sa_vaja3in4_docker:${{ github.run_id }}
+        
+      - name: Push to Docker Hub with action
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: docker.io
+          tags: ${{ github.run_id }}
+          image: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.REPO_NAME }}
