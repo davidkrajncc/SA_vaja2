@@ -27,7 +27,7 @@ jobs:
     needs: okolje
     runs-on: self-hosted
     steps:
-      name: TEST
+      - name: TEST
         run: |
           pytest || echo "Test execution failed" > napaka.txt
         continue-on-error: true
