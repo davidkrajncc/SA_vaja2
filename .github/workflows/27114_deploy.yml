@@ -1,5 +1,12 @@
-name: Deploy to Docker Hub
+#Github actions deploy 
 
+name: Github Actions Deploy Demo z uporabo akcije
+
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  REPONAME: ${{ secrets.REPO_NAME }}
 on:
   workflow_run:
     workflows: ["Testiranje kode"]
@@ -10,15 +17,16 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Checkout repository
+      - name: Checkout repozitorija
         uses: actions/checkout@v2
-
-      - name: Push to Docker Hub with action
+      
+      - name: Potisni na docker hub z akcijo
         uses: mr-smithers-excellent/docker-build-push@v6
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
           registry: docker.io
           dockerfile: Dockerfile
-          tags: ${{ github.run_id }}
-          image: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.REPO_NAME }}
+          image: ${{env.DOCKER_USERNAME}}/${{ env.REPONAME }}
+
+        
