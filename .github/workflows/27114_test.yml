@@ -23,7 +23,7 @@ jobs:
           pip install -r requirements.txt
 
   test:
-    name: Zaženi teste
+    name: Zazeni teste
     needs: okolje
     runs-on: self-hosted
     steps:
