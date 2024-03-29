@@ -20,4 +20,4 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           registry: docker.io
           tags: ${{ github.run_id }}
-          image: your-dockerhub-username/your-image-name
+          image: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.REPO_NAME }}
