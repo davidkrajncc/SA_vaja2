@@ -22,8 +22,8 @@ jobs:
         run: |
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         
-      - name: Build Docker image
-        run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/sa_vaja3in4_docker:${{ github.run_id }}
+      - name: Prijava v Docker
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u $DOCKER_USERNAME --password-stdin
         
       - name: Trenutni čas
         id: datum
