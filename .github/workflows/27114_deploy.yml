@@ -1,5 +1,16 @@
 name: Deploy to Docker Hub
 
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  REPONAME: ${{ secrets.REPO_NAME }}
+on:
+  workflow_run:
+    workflows: ["Testiranje kode"]
+    types:
+      - completed
+
+
 jobs:
   deploy:
     runs-on: self-hosted
@@ -7,18 +18,24 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
         
-      - name: Login to Docker Hub
+      - name: Prijava v Docker
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
         
       - name: Build Docker image
         run: docker build . --file Dockerfile --tag ${{ secrets.DOCKER_USERNAME }}/sa_vaja3in4_docker:${{ github.run_id }}
         
-      - name: Push to Docker Hub with action
-        uses: mr-smithers-excellent/docker-build-push@v6
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: docker.io
-          tags: ${{ github.run_id }}
-          image: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.REPO_NAME }}
+      - name: Trenutni čas
+        id: datum
+        #run: echo "::set-output name=date::$(date +'%Y-%m-%d--%M-%S')"
+        run: echo "date=$(date +'%Y-%m-%d--%M-%S')" >> "$GITHUB_ENV"
+      
+      - name: Zgradi docker sliko
+        run: |
+          echo ${{ steps.datum.outputs.date }}
+          echo "docker build . --file Dockerfile --tag $DOCKER_USERNAME/$REPONAME:$date"
+          docker build . --file Dockerfile --tag $DOCKER_USERNAME/$REPONAME:$date
+
+      - name: Potisni docker sliko
+        run: |
+          docker push $DOCKER_USERNAME/$REPONAME:$date
