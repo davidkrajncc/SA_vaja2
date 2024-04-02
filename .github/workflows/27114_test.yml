@@ -39,7 +39,6 @@ jobs:
     name: Izvajanje testov
     runs-on: ubuntu-latest
     needs: setup
-    if: failure()
     steps:
       - name: Checkout kode
         uses: actions/checkout@v2
@@ -58,5 +57,5 @@ jobs:
           fi
 
       - name: Izvajanje testov
-        run: | 
+        run: |
           pytest || echo "Test execution failed" > napaka.txt
