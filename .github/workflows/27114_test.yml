@@ -23,12 +23,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Preusmeri napako v datoteko
+        run: |
+          echo "Prišlo je do napake med postavljanjem okolja." > napaka.txt
+        continue-on-error: true
+
       - name: Ustvari artefakte
         if: failure()
         run: |
           echo "Prišlo je do napake med postavljanjem okolja." > napaka.txt
-        else:
-          echo "Okolje je bilo uspešno postavljeno."
 
   run-tests:
     name: Izvajanje testov
