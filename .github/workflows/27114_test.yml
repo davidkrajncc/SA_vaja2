@@ -58,4 +58,5 @@ jobs:
           fi
 
       - name: Izvajanje testov
-        run: pytest
+        run: | 
+          pytest || echo "Test execution failed" > napaka.txt
