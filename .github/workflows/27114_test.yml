@@ -52,7 +52,7 @@ jobs:
       - name: Preveri napako
         run: |
           if [ -f "napaka.txt" ]; then
-            echo "Napaka pri postavljanju okolja. Prekinjam izvajanje testov."
+            cat napaka.txt
             exit 1
           fi
 
