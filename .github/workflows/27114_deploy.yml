@@ -1,10 +1,5 @@
 name: Deploy to Docker Hub
 
-env:
-  DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-  REPONAME: ${{ secrets.REPO_NAME }}
-
 on:
   workflow_run:
     workflows: ["Testiranje kode"]

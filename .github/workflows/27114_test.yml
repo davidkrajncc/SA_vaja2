@@ -6,11 +6,12 @@ on:
       - main
 
 jobs:
-  okolje:
-    runs-on: self-hosted
+  setup:
+    name: Priprava okolja
+    runs-on: ubuntu-latest
     steps:
-      #  Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
+      - name: Checkout kode
+        uses: actions/checkout@v2
 
       - name: Nastavi Python 3.12
         uses: actions/setup-python@v2
@@ -22,12 +23,39 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-  test:
-    name: Zazeni teste
-    needs: okolje
-    runs-on: self-hosted
-    steps:
-      - name: TEST
+      - name: Preusmeri napako v datoteko
         run: |
-          pytest || echo "Test execution failed" > napaka.txt
+          echo "Prišlo je do napake med postavljanjem okolja." > napaka.txt
         continue-on-error: true
+
+      - name: Ustvari artefakte
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: environment-setup
+          path: napaka.txt
+
+  run-tests:
+    name: Izvajanje testov
+    runs-on: ubuntu-latest
+    needs: setup
+    if: failure()
+    steps:
+      - name: Checkout kode
+        uses: actions/checkout@v2
+
+      - name: Prenesi artefakte
+        uses: actions/download-artifact@v2
+        with:
+          name: environment-setup
+          path: ./
+
+      - name: Preveri napako
+        run: |
+          if [ -f napaka.txt ]; then
+            echo "Napaka pri postavljanju okolja. Prekinjam izvajanje testov."
+            exit 1
+          fi
+
+      - name: Izvajanje testov
+        run: pytest
