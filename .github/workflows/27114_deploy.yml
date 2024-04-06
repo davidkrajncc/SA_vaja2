@@ -8,14 +8,14 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: self-hosted #posel se bo izvajal na "self-hosted" sistemu
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2 #prenos kode iz githuba
 
       - name: Set current date
         id: datum
-        run: echo "date=$(date +'%Y-%m-%d--%M-%S')" >> "$GITHUB_ENV"
+        run: echo "date=$(date +'%Y-%m-%d--%M-%S')" >> "$GITHUB_ENV" #nastavimo datum
       
       - name: Docker build and push
         uses: mr-smithers-excellent/docker-build-push@v6
