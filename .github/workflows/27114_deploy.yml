@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted #posel se bo izvajal na "self-hosted" sistemu
+    runs-on: self-hosted #posel se bo izvajal na "self-hosted" sistemu 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2 #prenos kode iz githuba
