@@ -31,7 +31,6 @@ jobs:
     name: Priprava in izvajanje testov
     runs-on: self-hosted
     needs: check-tests
-    if: failure()
     steps:
       - name: Checkout kode
         uses: actions/checkout@v2
