@@ -15,7 +15,7 @@ jobs:
 
       - name: Preveri obstoj testnih skript
         run: |
-          if [ ! -f "test_naloga2.py" ]; then
+          if [ -f "test_naloga2.py" ]; then
             echo "Napaka: Ni bilo mogoče najti testne skripte 'test_naloga2.py'." > napaka.txt
           fi
 
@@ -24,7 +24,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-scripts
-          path: test_naloga2.py
+          path: napaka.txt
 
   setup-and-run-tests:
     name: Priprava in izvajanje testov
