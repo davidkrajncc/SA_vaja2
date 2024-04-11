@@ -39,6 +39,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Prenesi artefakte
+        continue-on-error: true
         uses: actions/download-artifact@v2
         with:
           name: test-scripts
