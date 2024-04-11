@@ -32,24 +32,17 @@ jobs:
     strategy:
       matrix:
         python-version: [3.12, 3.12.1]
+
     needs: check-tests
     steps:
       - name: Checkout kode
         uses: actions/checkout@v2
 
-      - name: Preveri, če so artefakti na voljo
-        run: |
-          if [ -z "$(ls -A)" ]; then
-            echo "Ni artefaktov na voljo, preskoči prenos."
-            exit 0
-          fi
-
       - name: Prenesi artefakte
-        if: always()
         uses: actions/download-artifact@v2
         with:
           name: test-scripts
-          path: .
+          path: napaka.txt
 
       - name: Preveri napako
         run: |
