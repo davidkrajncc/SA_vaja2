@@ -30,6 +30,9 @@ jobs:
   setup-and-run-tests:
     name: Priprava in izvajanje testov
     runs-on: self-hosted
+    strategy:
+      matrix:
+        python-version: [3.12, 3.12.1]
     needs: check-tests
     steps:
       - name: Checkout kode
@@ -48,9 +51,16 @@ jobs:
             exit 1
           fi
 
-      - name: Priprava izvajalnega okolja
+      - name: Nastavi Python 3.12
+        uses: actions/setup-python@v2 #namestitev pythona
+        with:
+          python-version: ${{ matrix.python-version }} #izbira pythona med 3.1 in 3.12
+
+      - name: Namesti odvisnosti
         run: |
-          # Dodajte skripto za pripravo izvajalnega okolja
+          python -m pip install pytest
+          python -m pip install --upgrade pip 
+          pip install -r requirements.txt 
 
       - name: Izvajanje testov
         run: |
