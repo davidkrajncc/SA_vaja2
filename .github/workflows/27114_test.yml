@@ -17,7 +17,6 @@ jobs:
         run: |
           if [ ! -f "test_naloga2.py" ]; then
             echo "Napaka: Ni bilo mogoče najti testne skripte 'test_naloga2.py'." > napaka.txt
-            echo "DEBUG: 'napaka.txt' file created with error message."
           fi
 
       - name: Ustvari artefakte
@@ -38,7 +37,15 @@ jobs:
       - name: Checkout kode
         uses: actions/checkout@v2
 
+      - name: Preveri, če so artefakti na voljo
+        run: |
+          if [ -z "$(ls -A)" ]; then
+            echo "Ni artefaktov na voljo, preskoči prenos."
+            exit 0
+          fi
+
       - name: Prenesi artefakte
+        if: always()
         uses: actions/download-artifact@v2
         with:
           name: test-scripts
@@ -49,14 +56,12 @@ jobs:
           if [ -f "napaka.txt" ]; then
             cat napaka.txt
             exit 1
-          else
-            echo "DEBUG: 'napaka.txt' file not found."
           fi
 
       - name: Nastavi Python 3.12
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v2 #namestitev pythona
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python-version }} #izbira pythona med 3.1 in 3.12
 
       - name: Namesti odvisnosti
         run: |
