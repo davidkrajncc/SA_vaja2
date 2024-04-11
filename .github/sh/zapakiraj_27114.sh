@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Gradnja Docker slike
-docker build -t your-image-name .
+docker build -t davidkrajncc/sa_vaja3in4_docker:latest .
 
 # Prijava v DockerHub
 echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
