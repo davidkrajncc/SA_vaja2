@@ -24,7 +24,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-scripts
-          path: napaka.txt
+          path: ./napaka.txt
 
   setup-and-run-tests:
     name: Priprava in izvajanje testov
@@ -42,7 +42,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: test-scripts
-          path: napaka.txt
+          path: .
 
       - name: Preveri napako
         run: |
