@@ -24,7 +24,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-scripts
-          path: napaka.txt
+          path: .
 
   setup-and-run-tests:
     name: Priprava in izvajanje testov
