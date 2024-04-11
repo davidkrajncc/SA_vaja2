@@ -18,6 +18,9 @@ jobs:
           if [ ! -f "test_naloga2.py" ]; then
             echo "Napaka: Ni bilo mogoče najti testne skripte 'test_naloga2.py'." > napaka.txt
           fi
+          else
+            echo "Testna skripta 'test_naloga2.py' je bila najdena."
+          fi
 
       - name: Ustvari artefakte
         if: always()
