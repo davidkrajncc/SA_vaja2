@@ -17,12 +17,9 @@ jobs:
         id: datum
         run: echo "date=$(date +'%Y-%m-%d--%M-%S')" >> "$GITHUB_ENV" #nastavimo datum
       
-      - name: Docker build and push
-        uses: mr-smithers-excellent/docker-build-push@v6
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          registry: docker.io
-          dockerfile: Dockerfile
-          tags: ${{ steps.datum.outputs.date }}
-          image: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.REPO_NAME }}
+      - name: Run deployment script
+        run: chmod +x ./sh/deploy.sh && ./sh/deploy.sh
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+          REPO_NAME: your-docker-repo-name
