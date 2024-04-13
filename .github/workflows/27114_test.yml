@@ -3,28 +3,28 @@ name: Testiranje kode
 on:
   push:
     branches:
-      - main
+      - main #skripta se izvede samo ob potisku na glavno vejo
 
 jobs:
-  check-tests:
+  check-tests: #ime prvega posla, ki preverja če datoteka z testom obstaja
     name: Preverjanje testnih skript
-    runs-on: self-hosted
+    runs-on: self-hosted #posel se bo izvajal na "self-hosted" sistemu
     steps:
       - name: Checkout kode
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2 #prenos kode iz githuba
 
       - name: Preveri obstoj testnih skript
-        run: |
-          if [ ! -f "test_naloga2.py" ]; then
+        run: | #preverimo če obstaja testna skripta, in če te skripta ne obstaja, shranimo text v datoteko napaka.txt
+          if [ ! -f "test_naloga2.py" ]; then 
             echo "Napaka: Ni bilo mogoče najti testne skripte 'test_naloga2.py'." > napaka.txt
           fi
 
       - name: Ustvari artefakte
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2 #shranimo artefakte
         with:
           name: test-scripts
-          path: napaka.txt
+          path: napaka.txt #katero datoteko shranimo
 
   setup-and-run-tests:
     name: Priprava in izvajanje testov
@@ -33,20 +33,20 @@ jobs:
       matrix:
         python-version: [3.12, 3.12.1]
 
-    needs: check-tests
+    needs: check-tests #za izvajeanje drugega posla potrebujemo uspešno izveden prvi posel
     steps:
       - name: Checkout kode
         uses: actions/checkout@v2
 
       - name: Prenesi artefakte
-        continue-on-error: true
-        uses: actions/download-artifact@v2
+        continue-on-error: true 
+        uses: actions/download-artifact@v2 #prenesi artefakte
         with:
           name: test-scripts
-          path: .
+          path: . #pot do mape, kamor se prenesejo artefakti
 
       - name: Preveri napako
-        run: |
+        run: | #preveri, če obstaja datoteka napaka.txt, in če obstaja, jo izpiše in končamo izvajanje
           if [ -f "napaka.txt" ]; then
             cat napaka.txt
             exit 1
@@ -58,11 +58,11 @@ jobs:
           python-version: ${{ matrix.python-version }} #izbira pythona med 3.1 in 3.12
 
       - name: Namesti odvisnosti
-        run: |
+        run: | #namestitev vse odvisnosti
           python -m pip install pytest
           python -m pip install --upgrade pip 
           pip install -r requirements.txt 
 
       - name: Izvajanje testov
-        run: |
-          pytest test_naloga2.py
+        run: | #izvedemo teste
+          pytest test_naloga2.py 
